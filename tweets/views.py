@@ -20,3 +20,18 @@ def tweet_detail_view(request, tweet_id):
         data['message'] = "Not found"
         status = 404
     return JsonResponse(data, status=status)
+
+
+def tweet_list_view(request):
+    qs = Tweet.objects.all()
+    tweets_list = [
+        {
+            'id': q.id,
+            "content": q.content,
+        }
+        for q in qs
+    ]
+    data = {
+        "response": tweets_list,
+    }
+    return JsonResponse(data)

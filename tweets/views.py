@@ -28,6 +28,7 @@ def tweet_list_view(request):
         {
             'id': q.id,
             "content": q.content,
+            "likes": 12,
         }
         for q in qs
     ]

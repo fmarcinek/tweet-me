@@ -5,7 +5,7 @@ from .models import Tweet
 
 
 def home(request):
-    return render(request, 'base/home.html', context={}, status=200)
+    return render(request, 'pages/home.html', context={}, status=200)
 
 
 def tweet_detail_view(request, tweet_id):

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404, JsonResponse
 
 from .models import Tweet
+from .forms import TweetForm
 
 
 def home(request):
@@ -20,6 +21,15 @@ def tweet_detail_view(request, tweet_id):
         data['message'] = "Not found"
         status = 404
     return JsonResponse(data, status=status)
+
+
+def tweet_create_view(request):
+    form = TweetForm(request.POST or None)
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.save()
+        form = TweetForm()
+    return render(request, 'components/form.html', context={'form': form})
 
 
 def tweet_list_view(request):

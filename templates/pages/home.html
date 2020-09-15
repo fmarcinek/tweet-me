@@ -31,12 +31,16 @@
       const myFormData = new FormData(myForm);
       const url = myForm.getAttribute("action");
       const method = myForm.getAttribute("method");
-      const xhr = new XMLHttpRequest()
+      const xhr = new XMLHttpRequest();
+      xhr.responseType = "json";
       xhr.open(method, url);
       xhr.onload = function () {
-          {#const serverResponse = xhr.response;#}
-          const tweetsEl = document.getElementById("tweets");
-          loadTweets(tweetsEl);
+          if (xhr.status === 201) {
+              const newTweet = xhr.response;
+              const newTweetEl = formatTweetElement(newTweet);
+              const ogHtml = tweetContainerEl.innerHTML;
+              tweetContainerEl.innerHTML = newTweetEl + ogHtml;
+          }
       }
       xhr.send(myFormData);
   }
@@ -45,9 +49,9 @@
 
   tweetCreateFormEl.addEventListener("submit", handleTweetCreateFormDidSubmit);
 
-  const tweetsElement = document.getElementById("tweets");
+  const tweetContainerEl = document.getElementById("tweets");
 
-  function loadTweets(tweetsElement) {
+  function loadTweets(tweetContainerEl) {
     const xhr = new XMLHttpRequest();
     const method = 'GET';
     const url = "/tweets";
@@ -57,18 +61,18 @@
     xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
     xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xhr.onload = function () {
-    const serverResponse = xhr.response;
-    const listedItems = serverResponse.response;
-    let finalTweetStr = "";
-    for (const tweetObj of listedItems) {
-        finalTweetStr += formatTweetElement(tweetObj);
-    }
-    tweetsElement.innerHTML = finalTweetStr;
+        const serverResponse = xhr.response;
+        const listedItems = serverResponse.response;
+        let finalTweetStr = "";
+        for (const tweetObj of listedItems) {
+            finalTweetStr += formatTweetElement(tweetObj);
+        }
+        tweetContainerEl.innerHTML = finalTweetStr;
     }
     xhr.send();
   }
 
-  loadTweets(tweetsElement);
+  loadTweets(tweetContainerEl);
 
   function handleDidLike(tweet_id, currentCount) {
     console.log(tweet_id, currentCount);

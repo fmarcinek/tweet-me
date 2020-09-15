@@ -26,10 +26,27 @@
 
 <script>
   const tweetsElement = document.getElementById("tweets");
-  const xhr = new XMLHttpRequest();
-  const method = 'GET';
-  const url = "/tweets";
-  const responseType = "json";
+
+  function loadTweets(tweetsElement) {
+    const xhr = new XMLHttpRequest();
+    const method = 'GET';
+    const url = "/tweets";
+
+    xhr.responseType = "json";
+    xhr.open(method, url);
+    xhr.onload = function () {
+    const serverResponse = xhr.response;
+    const listedItems = serverResponse.response;
+    let finalTweetStr = "";
+    for (const tweetObj of listedItems) {
+        finalTweetStr += formatTweetElement(tweetObj);
+    }
+    tweetsElement.innerHTML = finalTweetStr;
+    }
+    xhr.send();
+  }
+
+  loadTweets(tweetsElement);
 
   function handleDidLike(tweet_id, currentCount) {
     console.log(tweet_id, currentCount);
@@ -44,19 +61,6 @@
     return "<div class='col-12 col-md-10 mx-auto border rounded py-3 mb-4 tweet' id='tweet-" + tweet.id +
             "'<p>" + tweet.content + "</p><div class='btn-group'>" + likeBtn(tweet) + "</div></div>";
   }
-
-  xhr.responseType = responseType;
-  xhr.open(method, url);
-  xhr.onload = function () {
-    const serverResponse = xhr.response;
-    const listedItems = serverResponse.response;
-    let finalTweetStr = "";
-    for (const tweetObj of listedItems) {
-      finalTweetStr += formatTweetElement(tweetObj);
-    }
-    tweetsElement.innerHTML = finalTweetStr;
-  }
-  xhr.send();
 
 </script>
 

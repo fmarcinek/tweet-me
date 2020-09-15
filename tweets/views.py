@@ -33,6 +33,9 @@ def tweet_create_view(request):
         if request.is_ajax():
             return JsonResponse(obj.serialize(), status=201)  # 201 is for created items
         form = TweetForm()
+    if form.errors:
+        if request.is_ajax():
+            return JsonResponse(form.errors, status=400)
     return render(request, 'components/form.html', context={'form': form})
 
 

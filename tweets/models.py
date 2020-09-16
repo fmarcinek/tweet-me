@@ -27,9 +27,6 @@ class Tweet(models.Model):
     def __str__(self):
         return f'{self.id}, {self.content}'
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "content": self.content,
-            "likes": random.randint(0, 100),
-        }
+    @property
+    def is_retweet(self):
+        return self.parent is not None

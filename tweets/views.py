@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Tweet
 from .forms import TweetForm
-from .serializers import TweetSerializer, TweetActionSerializer
+from .serializers import TweetSerializer, TweetCreateSerializer, TweetActionSerializer
 
 
 def home(request):
@@ -91,7 +91,7 @@ def tweet_detail_view_pure_django(request, tweet_id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def tweet_create_view(request):
-    serializer = TweetSerializer(data=request.POST)
+    serializer = TweetCreateSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data, status=201)

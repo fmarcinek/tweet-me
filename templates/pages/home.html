@@ -70,7 +70,11 @@
               } else {
                   alert("An error occured. Please try again.")
               }
+          } else if (xhr.status === 401) {
+              alert("you must login!")
+              window.location.href = '/login'
           }
+
       }
       xhr.send(myFormData);
   }

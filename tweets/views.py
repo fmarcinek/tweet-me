@@ -26,9 +26,14 @@ def tweet_detail_view(request, tweet_id):
 
 
 def tweet_create_view(request):
+    if not request.user.is_authenticated:
+        if request.is_ajax():
+            return JsonResponse({}, status=401)  # not authenticated
+        return redirect(settings.LOGIN_URL)
     form = TweetForm(request.POST or None)
     if form.is_valid():
         obj = form.save(commit=False)
+        obj.user = request.user
         obj.save()
         if request.is_ajax():
             return JsonResponse(obj.serialize(), status=201)  # 201 is for created items

@@ -14,6 +14,9 @@ class Tweet(models.Model):
     class Meta:
         ordering = ['-id']
 
+    def __str__(self):
+        return f'{self.id}, {self.content}'
+
     def serialize(self):
         return {
             "id": self.id,

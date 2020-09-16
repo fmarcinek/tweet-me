@@ -5,6 +5,7 @@ from django.conf import settings
 
 from .models import Tweet
 from .forms import TweetForm
+from .serializers import TweetSerializer
 
 
 def home(request):
@@ -26,6 +27,14 @@ def tweet_detail_view(request, tweet_id):
 
 
 def tweet_create_view(request):
+    serializer = TweetSerializer(data=request.POST or None)
+    if serializer.is_valid():
+        serializer.save(user=request.user)
+        return JsonResponse(serializer.data, status=201)
+    return JsonResponse({}, status=400)
+
+
+def tweet_create_view_pure_django(request):
     if not request.user.is_authenticated:
         if request.is_ajax():
             return JsonResponse({}, status=401)  # not authenticated

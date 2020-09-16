@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Tweet
 from .forms import TweetForm
-from .serializers import TweetSerializer
+from .serializers import TweetSerializer, TweetActionSerializer
 
 
 def home(request):
@@ -36,6 +36,35 @@ def tweet_delete_view(request, tweet_id):
     obj = qs.first()
     obj.delete()
     return Response({"message": "Tweet removed"}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def tweet_action_view(request, tweet_id):
+    """
+    Id is required in the request.
+    Action options are:
+        - like
+        - unlike
+        - retweet
+    """
+    serializer = TweetActionSerializer(request.POST)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        tweet_id = data.get('id')
+        action = data.get('action')
+
+        qs = Tweet.objects.filter(id=tweet_id)
+        if not qs.exists():
+            return Response({}, status=404)
+        obj = qs.first()
+
+        if action == 'like':
+            obj.likes.add(request.user)
+        elif action == 'unlike':
+            obj.likes.remove(request.user)
+        elif action == 'retweet':
+            raise NotImplementedError  # TODO
 
 
 def tweet_detail_view_pure_django(request, tweet_id):

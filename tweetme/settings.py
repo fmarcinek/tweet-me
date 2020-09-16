@@ -129,3 +129,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MAX_TWEET_LENGTH = 240
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}

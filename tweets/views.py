@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.conf import settings
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Tweet
 from .forms import TweetForm
@@ -38,6 +39,7 @@ def tweet_detail_view_pure_django(request, tweet_id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def tweet_create_view(request):
     serializer = TweetSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
